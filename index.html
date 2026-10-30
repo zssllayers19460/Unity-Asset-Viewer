@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Unity Asset Studio</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="so-viewer.css">
+</head>
+
+<body>
+  <div class="app-shell">
+    <!-- Sidebar spanning full height on the left with Foldable Toggle -->
+    <aside class="app-sidebar" id="appSidebar">
+      <div class="sidebar-top-row">
+        <div class="sidebar-brand">
+          <h2>Unity Studio</h2>
+        </div>
+        <button id="sidebarToggleBtn" class="sidebar-collapse-toggle" title="Collapse/Expand Sidebar">◀</button>
+      </div>
+      <div class="sidebar-section-title">Viewers</div>
+      <button class="sidebar-nav-btn active" data-view="prefab">📦 <span>Prefab Hierarchy</span></button>
+      <button class="sidebar-nav-btn" data-view="so">⚙️ <span>ScriptableObject</span></button>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="app-main-content">
+      <header>
+        <div class="header-main">
+          <h1>Asset Studio & Inspector</h1>
+          <div class="header-actions">
+            <label class="edit-toggle-label">
+              <input type="checkbox" id="editModeToggle"> Enable Edit Mode
+            </label>
+            <button id="saveAssetBtn" class="toolbar-btn hidden" title="Export modified asset safely">Save & Export
+              Asset</button>
+            <button id="toggleDropZonesBtn" class="toggle-drop-btn">Toggle Drop Zones</button>
+          </div>
+        </div>
+        <p class="subtitle">Inspect and safely edit Unity Prefabs, Prefab Variants, and ScriptableObjects.</p>
+      </header>
+
+      <!-- Drop Zones Container -->
+      <div id="dropZonesContainer" class="drop-zones-container">
+        <!-- Prefab Drop Zone & Comprehensive Indexing Drop Zone -->
+        <div id="prefabDropZoneGroup" class="drop-zone-group">
+          <div id="dropZone" class="drop-zone">
+            <p>📦 <strong>1. Drop your .prefab file here</strong> (or click)</p>
+            <input type="file" id="fileInput" accept=".prefab" hidden>
+          </div>
+
+          <div class="drop-zone-wrapper">
+            <div id="metaDropZone" class="drop-zone drop-zone-secondary">
+              <p>📁 <strong>2. Drop your Assets folder, Scripts, or SO Configs here</strong></p>
+              <p class="drop-help-text">
+                💡 Automatically indexes <strong>.cs</strong> (for script types & booleans), <strong>.meta</strong> (for
+                GUID mappings & readable names), and individual <strong>.asset</strong> files or folders.
+              </p>
+              <p id="metaStatus" class="meta-status"></p>
+              <input type="file" id="metaFileInput" accept=".meta,.cs,.asset" multiple hidden>
+            </div>
+          </div>
+        </div>
+
+        <!-- ScriptableObject Drop Zone (Isolated) -->
+        <div id="soDropZoneGroup" class="drop-zone-group hidden">
+          <div id="soDropZone" class="drop-zone so-drop-zone-standalone">
+            <p>⚙️ <strong>Drop your ScriptableObject .asset file here</strong> (or click to browse)</p>
+            <input type="file" id="soFileInput" accept=".asset" hidden>
+          </div>
+        </div>
+      </div>
+
+      <!-- Workspace Viewers with Independent Inspectors -->
+      <main id="viewerLayout" class="viewer-layout hidden">
+        <!-- Prefab View Mode Layout -->
+        <div id="prefabViewWorkspace" class="view-workspace">
+          <section id="treeContainer" class="tree-panel">
+            <div class="panel-toolbar">
+              <input type="text" id="searchInput" class="search-input" placeholder="Search prefab hierarchy...">
+              <button id="collapseBtn" class="toolbar-btn" title="Expand/Collapse Hierarchy">Collapse</button>
+            </div>
+            <div id="treeContent" class="tree-content"></div>
+          </section>
+          <section id="inspectorContainer" class="inspector-panel">
+            <div class="inspector-empty-wrap">
+              <p class="empty-state">Select a GameObject or component to inspect its prefab data.</p>
+            </div>
+          </section>
+        </div>
+
+        <!-- ScriptableObject View Mode Layout (Independent Window/Inspector) -->
+        <div id="soViewWorkspace" class="view-workspace so-standalone-workspace hidden">
+          <section id="soInspectorContainer" class="inspector-panel so-standalone-inspector">
+            <div class="inspector-empty-wrap">
+              <p class="empty-state">Drop a ScriptableObject (.asset) file in Box 1 to inspect its config data.</p>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Core Scripts -->
+  <script src="Core/yaml-parser.js"></script>
+  <script src="Core/reference-resolver.js"></script>
+  <script src="Core/field-names.js"></script>
+  <script src="Core/script-name-resolver.js"></script>
+  <script src="PrefabViewer/prefab-viewer.js"></script>
+  <script src="ScriptableObjectViewer/so-viewer.js"></script>
+  <script src="Core/main.js"></script>
+  <script>
+    // Sidebar fold toggle logic
+    document.getElementById('sidebarToggleBtn').addEventListener('click', () => {
+      let sidebar = document.getElementById('appSidebar');
+      let btn = document.getElementById('sidebarToggleBtn');
+      sidebar.classList.toggle('collapsed');
+      btn.textContent = sidebar.classList.contains('collapsed') ? '▶' : '◀';
+    });
+  </script>
+</body>
+
+</html>
